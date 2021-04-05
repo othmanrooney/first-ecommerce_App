@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'login_screen.dart';
 import 'package:flutter_app/services/auth.dart';
 
-import 'love.dart';
+import 'User/HomePage.dart';
 class SignUpScreen extends StatelessWidget {
   static String id = "SignUpScreen";
 
@@ -110,7 +110,7 @@ class SignUpScreen extends StatelessWidget {
                       if (_globalkey.currentState.validate()){
                         _globalkey.currentState.save();
                       try{
-                        final resultauth=await  _auth.signUp(_email,_password);
+                        final resultauth=await  _auth.signUp(_email.trim(),_password.trim());
                         print(resultauth.user.uid);
                         modelhud.changeisLoading(false);
                         Navigator.push(context,

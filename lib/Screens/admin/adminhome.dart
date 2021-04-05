@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Screens/admin/EditProduct.dart';
+import 'package:flutter_app/Screens/admin/VewOrder.dart';
 import 'package:flutter_app/Screens/admin/addProduct.dart';
 import 'package:flutter_app/constant.dart';
 
@@ -36,6 +37,7 @@ class _adminhomeState extends State<adminhome> {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.pushNamed(context, ViewOrder.id);
 
               },
               child: Text('View Product'),

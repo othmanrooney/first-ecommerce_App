@@ -6,19 +6,34 @@ import 'package:flutter_app/provider/adminmode.dart';
 import 'package:flutter_app/provider/modelHud.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constant.dart';
 import 'admin/adminhome.dart';
-import 'love.dart';
+import 'User/HomePage.dart';
 import 'package:flutter_app/services/auth.dart';
 
-class LoginScreen extends StatelessWidget {
-  final adminPassword="admin1234";
+class LoginScreen extends StatefulWidget {
   static String id = "LoginScreen";
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final adminPassword="admin1234";
+
   String _email ;
+
   String _password ;
+
+  bool KeepLogin=false;
+
   final GlobalKey<FormState> _globalkey = GlobalKey<FormState>();
+
   final _auth=Auth();
+
   bool isAdmin=false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -68,9 +83,36 @@ class LoginScreen extends StatelessWidget {
                   _email = value;
                 },
               ),
-              SizedBox(
-                height: height * 0.02,
+              Row(
+                children: [
+
+                  Theme(
+                    data: ThemeData(
+                      unselectedWidgetColor: Colors.white
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30),
+                      child: Checkbox(
+                          value: KeepLogin,
+                          onChanged: (value) {
+                            setState(() {
+                              KeepLogin=value;
+                            });
+                          },
+                        checkColor: KSecondary,
+                        activeColor: KMainColor,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text("Keep Login : ",style:TextStyle(
+                      color: Colors.white
+                    ),),
+                  ),
+                ],
               ),
+
               CustomeTextField(
                 hint: "Enter your Password",
                 Iconr: Icons.lock,
@@ -90,6 +132,9 @@ class LoginScreen extends StatelessWidget {
                   // borderRadius: BorderRadius.circular(20),
                   //),
                   onPressed: (){
+                    if(KeepLogin==true){
+                      _KeepUserLogin();
+                    }
                    _validate(context);
                   },
                   style: TextButton.styleFrom(
@@ -172,7 +217,7 @@ class LoginScreen extends StatelessWidget {
         if(_password ==adminPassword)
           {
             try{
-            await  _auth.signIn(_email, _password);
+            await  _auth.signIn(_email.trim(), _password.trim());
               Navigator.push(context, MaterialPageRoute(builder: (context)=>adminhome()));
             }catch(e){
               modelhud.changeisLoading(false);
@@ -203,4 +248,10 @@ class LoginScreen extends StatelessWidget {
     modelhud.changeisLoading(false);
   }
 
+  void _KeepUserLogin()async{
+    SharedPreferences preference =await SharedPreferences.getInstance();
+    preference.setBool( KKeepmeLogin, KeepLogin);
+
+
+  }
 }
